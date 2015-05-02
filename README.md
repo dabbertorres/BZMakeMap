@@ -15,13 +15,11 @@ I'll bring it up to 100% and then we'll see if I decide to add more features fro
 Simple GUI wrapper around using and launching makeTRN and the BZ editor.
 Uses the Windows Registry to find the BZ install.
 
-Bonus new features over old version:
-
+##### Bonus new features over old version:
 Custom planet files should be supported and selectable.
 Tooltips for the options to help explain what they're for.
 
-Notes:
-
+##### Notes:
 Add to Netmis options does not work at the moment since I got tired and decided to finish up.
 
 # Dependencies
