@@ -13,3 +13,6 @@ I'll bring it up to 100% and then we'll see if I decide to add more features fro
 
 # Dependencies
 Uses [JNA](https://github.com/twall/jna) for Windows Registry reading.
+
+# License
+[MIT](http://choosealicense.com/licenses/mit/)
