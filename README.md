@@ -11,6 +11,17 @@ And this is the result!
 Currently, it has about 80% feature parity as the original version. Maybe 50% if you include "prettiness".
 I'll bring it up to 100% and then we'll see if I decide to add more features from there.
 
+# What
+Simple GUI wrapper around using and launching makeTRN and the BZ editor.
+Uses the Windows Registry to find the BZ install.
+
+Bonus new features over old version:
+Custom planet files should be supported and selectable.
+Tooltips for the options to help explain what they're for.
+
+Notes:
+Add to Netmis options does not work at the moment since I got tired and decided to finish up.
+
 # Dependencies
 Uses [JNA](https://github.com/twall/jna) for Windows Registry reading.
 
