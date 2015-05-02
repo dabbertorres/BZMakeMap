@@ -17,6 +17,7 @@ Uses the Windows Registry to find the BZ install.
 
 ##### Bonus new features over old version:
 Custom planet files should be supported and selectable.
+
 Tooltips for the options to help explain what they're for.
 
 ##### Notes:
