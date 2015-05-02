@@ -8,7 +8,7 @@ import java.util.List;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 
-public class Utility
+public final class Utility
 {
 	private static final String BZ_REG_KEY = "SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{B3B61934-313A-44A2-B589-700FDAA6C758}_is1";
 	
@@ -45,4 +45,7 @@ public class Utility
 			e.printStackTrace();
 		}
 	}
+	
+	private Utility()
+	{}
 }
