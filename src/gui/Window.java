@@ -7,13 +7,8 @@
 package gui;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import java.io.File;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -21,33 +16,38 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import backend.Actions;
+import backend.BzoneFileFilter;
 import backend.Utility;
 
-public class Panel extends JPanel
+public class Window extends JFrame
 {
-	private static final long serialVersionUID = -3317813288766774217L;
-	
 	public static void main(String[] args)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
-				JFrame frame = new JFrame("BZMakeMap");
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.add(new Panel());
-				frame.pack();
-				frame.setVisible(true);
-				frame.setResizable(false);
+				new Window();
 			}
 		});
 	}
+	
+	private static final long serialVersionUID = -3317813288766774217L;
+	
+	// main window contents
+	private JPanel panel;
 	
 	private Box planetsBox;
 	private JLabel planetsLabel;
@@ -64,27 +64,38 @@ public class Panel extends JPanel
 	private Box checkBoxesBox;
 	private JCheckBox autoPaint;
 	private JCheckBox startEdit;
-	private JCheckBox saveAscii;
+	private JCheckBox asciiSave;
 	private JCheckBox addNetmis;
 	
 	private Box buttonBox;
 	private JButton createButton;
 	private JButton editButton;
 	
-	Panel()
+	// file chooser dialog for setting BZ Path
+	private JFileChooser fcDialog;
+	
+	public Window()
 	{
-		// get the planets we can use
-		File[] planetFilesINI = Utility.getFilesInDir(Utility.getBZInstallDir() + "/Edit/ini/");
+		super("BZMakeMap");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+		this.setResizable(false);
+		setupMenuBar();
 		
+		panel = new JPanel();
+		
+		// get the planets we can use
+		
+		File[] planetFilesINI = Utility.getFilesInDir(Utility.getBZInstallDir() + "/Edit/ini/");
 		String[] planetNames = new String[planetFilesINI.length];
 		for(int i = 0; i < planetNames.length; i++ )
 		{
 			String name = planetFilesINI[i].getName();
-			planetNames[i] = name.substring(0, name.length() - 4);	// cut off file extension
+			planetNames[i] = name.substring(0, name.length() - 4); // cut off file extension
 		}
 		
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		planetsBox = new Box(BoxLayout.X_AXIS);
 		planetsLabel = new JLabel("Planets:");
@@ -115,77 +126,123 @@ public class Panel extends JPanel
 		autoPaint.setToolTipText("Autopaints the terrain for the map if checked");
 		startEdit = new JCheckBox("startedit", true);
 		startEdit.setToolTipText("Launches the editor with /startedit, pausing gameplay, if checked");
-		saveAscii = new JCheckBox("Save Ascii", false);
-		saveAscii.setToolTipText("Saves the bzn file in ascii format");
+		asciiSave = new JCheckBox("Save Ascii", false);
+		asciiSave.setToolTipText("Saves the bzn file in ascii format");
 		addNetmis = new JCheckBox("Add to Netmis", false);
 		addNetmis.setToolTipText("Appends a line to the netmis file for the map");
 		checkBoxesBox.add(autoPaint);
 		checkBoxesBox.add(Box.createHorizontalGlue());
 		checkBoxesBox.add(startEdit);
 		checkBoxesBox.add(Box.createHorizontalGlue());
-		checkBoxesBox.add(saveAscii);
+		checkBoxesBox.add(asciiSave);
 		checkBoxesBox.add(Box.createHorizontalGlue());
 		checkBoxesBox.add(addNetmis);
 		
 		buttonBox = new Box(BoxLayout.X_AXIS);
 		createButton = new JButton("Create");
 		createButton.setToolTipText("Creates the map files with the given information");
-		createButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if(fileName.getText().length() > 0)
-				{
-					List<String> command = new ArrayList<String>();
-					command.add(Utility.getBZInstallDir() + "Edit/makeTRN.exe");
-					command.add(fileName.getText());
-					command.add("/c");
-					command.add("/w=" + sizes.getSelectedItem());
-					command.add("/h=" + sizes.getSelectedItem());
-					
-					if(autoPaint.isSelected())
-						command.add("/p=" + Utility.getBZInstallDir() + "Edit/ini/" + planets.getSelectedItem() +
-									".ini");
-					
-					Utility.launchExe(command, Utility.getBZInstallDir() + "/addon", true);
-				}
-			}
-		});
+		createButton.addActionListener(new Actions.Create(this));
 		
 		editButton = new JButton("Edit");
 		editButton.setToolTipText("Runs the BZ editor with the given file name and set options");
-		editButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				List<String> command = new ArrayList<String>();
-				command.add(Utility.getBZInstallDir() + "bzone.exe");
-				command.add(fileName.getText() + ".trn");
-				command.add(startEdit.isSelected() ? "/startedit" : "/edit");
-				command.add("/win");
-				command.add(saveAscii.isSelected() ? "/asciisave" : "");
-				
-				Utility.launchExe(command, Utility.getBZInstallDir(), false);
-			}
-		});
+		editButton.addActionListener(new Actions.Edit(this));
 		
 		buttonBox.add(createButton);
 		buttonBox.add(Box.createHorizontalGlue());
 		buttonBox.add(editButton);
 		
-		this.add(planetsBox);
-		this.add(Box.createVerticalGlue());
-		this.add(sizesBox);
-		this.add(Box.createVerticalGlue());
-		this.add(fileNameBox);
-		this.add(Box.createVerticalGlue());
-		this.add(checkBoxesBox);
-		this.add(Box.createVerticalGlue());
-		this.add(buttonBox);
+		panel.add(planetsBox);
+		panel.add(Box.createVerticalGlue());
+		panel.add(sizesBox);
+		panel.add(Box.createVerticalGlue());
+		panel.add(fileNameBox);
+		panel.add(Box.createVerticalGlue());
+		panel.add(checkBoxesBox);
+		panel.add(Box.createVerticalGlue());
+		panel.add(buttonBox);
+		
+		this.add(panel);
+		this.pack();
+		
+		fcDialog = new JFileChooser();
+		fcDialog.setFileFilter(new BzoneFileFilter());
+	}
+	
+	public void showDoneDialog()
+	{
+		JOptionPane.showMessageDialog(this, "Map file creation complete.", "Complete", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public void showBZPathChooser()
+	{
+		fcDialog.showDialog(this, "Select");
+	}
+	
+	public String getSelectedBZPath()
+	{
+		try
+		{
+			return fcDialog.getSelectedFile().getCanonicalPath();
+		}
+		catch(IOException | NullPointerException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public String getFileName()
+	{
+		return fileName.getText();
+	}
+	
+	public int getSelectedSize()
+	{
+		return (int) sizes.getSelectedItem();
+	}
+	
+	public String getSelectedPlanet()
+	{
+		return (String) planets.getSelectedItem();
+	}
+	
+	public boolean isAutoPaintOn()
+	{
+		return autoPaint.isSelected();
+	}
+	
+	public boolean isStartEditOn()
+	{
+		return startEdit.isSelected();
+	}
+	
+	public boolean isAsciiSaveOn()
+	{
+		return asciiSave.isSelected();
 	}
 	
 	public Dimension getPreferredSize()
 	{
-		return new Dimension(360, 160);
+		return new Dimension(360, 180);
+	}
+	
+	private void setupMenuBar()
+	{
+		JMenuBar mb = new JMenuBar();
+		
+		JMenu menu = new JMenu("File");
+		
+		JMenuItem mi;
+		
+		// option to set the Battlezone path
+		mi = new JMenuItem("Set Path...");
+		mi.addActionListener(new Actions.SetBZPath(this));
+		
+		menu.add(mi);
+		
+		mb.add(menu);
+		
+		this.setJMenuBar(mb);
 	}
 }

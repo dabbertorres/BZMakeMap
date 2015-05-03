@@ -22,6 +22,11 @@ public final class Utility
 		return bzPath;
 	}
 	
+	public static void setBZPath(String p)
+	{
+		bzPath = p;
+	}
+	
 	public static File[] getFilesInDir(String dirStr)
 	{
 		return new File(dirStr).listFiles();
