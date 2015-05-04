@@ -9,11 +9,10 @@ package gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -49,6 +48,10 @@ public class Panel extends JPanel
 		});
 	}
 	
+	// dictionary for strings
+	private Dictionary dic;
+	
+	// gui variables
 	private Box planetsBox;
 	private JLabel planetsLabel;
 	private JComboBox<String> planets;
@@ -73,6 +76,8 @@ public class Panel extends JPanel
 	
 	Panel()
 	{
+		dic = new Dictionary(Locale.getDefault().getLanguage());
+		
 		// get the planets we can use
 		File[] planetFilesINI = Utility.getFilesInDir(Utility.getBZInstallDir() + "/Edit/ini/");
 		
@@ -87,7 +92,7 @@ public class Panel extends JPanel
 		this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		planetsBox = new Box(BoxLayout.X_AXIS);
-		planetsLabel = new JLabel("Planets:");
+		planetsLabel = new JLabel(dic.get("planets"));
 		planets = new JComboBox<String>(planetNames);
 		planets.setMaximumSize(planets.getPreferredSize());
 		planetsBox.add(planetsLabel);
@@ -95,7 +100,7 @@ public class Panel extends JPanel
 		planetsBox.add(planets);
 		
 		sizesBox = new Box(BoxLayout.X_AXIS);
-		sizesLabel = new JLabel("Size:");
+		sizesLabel = new JLabel(dic.get("size"));
 		sizes = new JComboBox<Integer>(new Integer[] {1280, 2560, 3840, 5120});
 		sizes.setMaximumSize(sizes.getPreferredSize());
 		sizesBox.add(sizesLabel);
@@ -103,7 +108,7 @@ public class Panel extends JPanel
 		sizesBox.add(sizes);
 		
 		fileNameBox = new Box(BoxLayout.X_AXIS);
-		fileNameLabel = new JLabel("File:");
+		fileNameLabel = new JLabel(dic.get("file"));
 		fileName = new JTextField(10);
 		fileName.setMaximumSize(fileName.getPreferredSize());
 		fileNameBox.add(fileNameLabel);
@@ -111,14 +116,14 @@ public class Panel extends JPanel
 		fileNameBox.add(fileName);
 		
 		checkBoxesBox = new Box(BoxLayout.X_AXIS);
-		autoPaint = new JCheckBox("Auto Paint", true);
-		autoPaint.setToolTipText("Autopaints the terrain for the map if checked");
+		autoPaint = new JCheckBox(dic.get("autopaint"), true);
+		autoPaint.setToolTipText(dic.get("autopaintToolTip"));
 		startEdit = new JCheckBox("startedit", true);
-		startEdit.setToolTipText("Launches the editor with /startedit, pausing gameplay, if checked");
-		saveAscii = new JCheckBox("Save Ascii", false);
-		saveAscii.setToolTipText("Saves the bzn file in ascii format");
-		addNetmis = new JCheckBox("Add to Netmis", false);
-		addNetmis.setToolTipText("Appends a line to the netmis file for the map");
+		startEdit.setToolTipText(dic.get("starteditToolTip"));
+		saveAscii = new JCheckBox(dic.get("saveAscii"), false);
+		saveAscii.setToolTipText(dic.get("saveAsciiToolTip"));
+		addNetmis = new JCheckBox(dic.get("netmis"), false);
+		addNetmis.setToolTipText(dic.get("netmisToolTip"));
 		checkBoxesBox.add(autoPaint);
 		checkBoxesBox.add(Box.createHorizontalGlue());
 		checkBoxesBox.add(startEdit);
@@ -128,8 +133,8 @@ public class Panel extends JPanel
 		checkBoxesBox.add(addNetmis);
 		
 		buttonBox = new Box(BoxLayout.X_AXIS);
-		createButton = new JButton("Create");
-		createButton.setToolTipText("Creates the map files with the given information");
+		createButton = new JButton(dic.get("create"));
+		createButton.setToolTipText(dic.get("createToolTip"));
 		createButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -152,8 +157,8 @@ public class Panel extends JPanel
 			}
 		});
 		
-		editButton = new JButton("Edit");
-		editButton.setToolTipText("Runs the BZ editor with the given file name and set options");
+		editButton = new JButton(dic.get("edit"));
+		editButton.setToolTipText(dic.get("editToolTip"));
 		editButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
