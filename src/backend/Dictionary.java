@@ -19,18 +19,23 @@ public class Dictionary
 		loadFile();
 	}
 	
+	public String getLanguage()
+	{
+		return language;
+	}
+	
 	public String get(String k)
 	{
 		return strings.get(k);
 	}
 	
-	public void loadFile()
+	private void loadFile()
 	{
 		strings.clear();
 		
 		try
 		{
-			InputStream in = getClass().getResourceAsStream("/gui/" + language + ".dic");
+			InputStream in = getClass().getResourceAsStream("/res/" + language + ".dic");
 			Scanner scan = new Scanner(in);
 			
 			while(scan.hasNextLine())

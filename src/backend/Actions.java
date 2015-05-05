@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JMenuItem;
+
 public class Actions
 {
 	public static class Create implements ActionListener
@@ -35,7 +37,7 @@ public class Actions
 				if(win.isAutoPaintOn())
 					command.add("/p=" + Utility.getBZInstallDir() + "Edit/ini/" + win.getSelectedPlanet() + ".ini");
 				
-				Utility.launchExe(command, Utility.getBZInstallDir() + "/addon", true);
+				Utility.launchExe(command, Utility.getBZInstallDir() + "addon/", true);
 			}
 		}
 	}
@@ -69,11 +71,11 @@ public class Actions
 		}
 	}
 	
-	public static class SetBZPath implements ActionListener
+	public static class BZPathSetter implements ActionListener
 	{
 		private gui.Window win;
 		
-		public SetBZPath(gui.Window w)
+		public BZPathSetter(gui.Window w)
 		{
 			win = w;
 		}
@@ -93,6 +95,23 @@ public class Actions
 				p = p.substring(0, p.lastIndexOf('/') + 1);
 			
 			Utility.setBZPath(p);
+		}
+	}
+	
+	public static class LanguageSetter implements ActionListener
+	{
+		private gui.Window win;
+		
+		public LanguageSetter(gui.Window w)
+		{
+			win = w;
+		}
+		
+		public void actionPerformed(ActionEvent e)
+		{
+			JMenuItem d = (JMenuItem) e.getSource();
+			
+			win.setLanguage(d.getText());
 		}
 	}
 }
