@@ -17,7 +17,16 @@ public final class Utility
 	public static String getBZInstallDir()
 	{
 		if(bzPath == null)
-			bzPath = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, BZ_REG_KEY, "InstallLocation");
+		{
+			if(Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, BZ_REG_KEY, "InstallLocation"))
+			{
+				bzPath = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, BZ_REG_KEY, "InstallLocation");
+			}
+			else
+			{
+				// implement ask user for location and set the key to that
+			}
+		}
 		
 		return bzPath;
 	}

@@ -6,9 +6,13 @@
 
 package gui;
 
-import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -29,6 +33,7 @@ import javax.swing.SwingUtilities;
 
 import backend.Actions;
 import backend.BzoneFileFilter;
+import backend.Dictionary;
 import backend.Utility;
 
 public class Window extends JFrame
@@ -45,10 +50,14 @@ public class Window extends JFrame
 	}
 	
 	private static final long serialVersionUID = -3317813288766774217L;
+
+	// dictionary for strings
+	private Dictionary dic;
 	
 	// main window contents
 	private JPanel panel;
 	
+	// gui variables
 	private Box planetsBox;
 	private JLabel planetsLabel;
 	private JComboBox<String> planets;
@@ -82,6 +91,8 @@ public class Window extends JFrame
 		this.setResizable(false);
 		setupMenuBar();
 		
+		dic = new Dictionary(Locale.getDefault().getLanguage());
+		
 		panel = new JPanel();
 		
 		// get the planets we can use
@@ -98,7 +109,7 @@ public class Window extends JFrame
 		panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		planetsBox = new Box(BoxLayout.X_AXIS);
-		planetsLabel = new JLabel("Planets:");
+		planetsLabel = new JLabel(dic.get("planets"));
 		planets = new JComboBox<String>(planetNames);
 		planets.setMaximumSize(planets.getPreferredSize());
 		planetsBox.add(planetsLabel);
@@ -106,7 +117,7 @@ public class Window extends JFrame
 		planetsBox.add(planets);
 		
 		sizesBox = new Box(BoxLayout.X_AXIS);
-		sizesLabel = new JLabel("Size:");
+		sizesLabel = new JLabel(dic.get("size"));
 		sizes = new JComboBox<Integer>(new Integer[] {1280, 2560, 3840, 5120});
 		sizes.setMaximumSize(sizes.getPreferredSize());
 		sizesBox.add(sizesLabel);
@@ -114,7 +125,7 @@ public class Window extends JFrame
 		sizesBox.add(sizes);
 		
 		fileNameBox = new Box(BoxLayout.X_AXIS);
-		fileNameLabel = new JLabel("File:");
+		fileNameLabel = new JLabel(dic.get("file"));
 		fileName = new JTextField(10);
 		fileName.setMaximumSize(fileName.getPreferredSize());
 		fileNameBox.add(fileNameLabel);
@@ -122,14 +133,15 @@ public class Window extends JFrame
 		fileNameBox.add(fileName);
 		
 		checkBoxesBox = new Box(BoxLayout.X_AXIS);
-		autoPaint = new JCheckBox("Auto Paint", true);
-		autoPaint.setToolTipText("Autopaints the terrain for the map if checked");
+		autoPaint = new JCheckBox(dic.get("autopaint"), true);
+		autoPaint.setToolTipText(dic.get("autopaintToolTip"));
 		startEdit = new JCheckBox("startedit", true);
-		startEdit.setToolTipText("Launches the editor with /startedit, pausing gameplay, if checked");
-		asciiSave = new JCheckBox("Save Ascii", false);
-		asciiSave.setToolTipText("Saves the bzn file in ascii format");
-		addNetmis = new JCheckBox("Add to Netmis", false);
-		addNetmis.setToolTipText("Appends a line to the netmis file for the map");
+		startEdit.setToolTipText(dic.get("starteditToolTip"));
+		asciiSave = new JCheckBox(dic.get("saveAscii"), false);
+		asciiSave.setToolTipText(dic.get("saveAsciiToolTip"));
+		addNetmis = new JCheckBox(dic.get("netmis"), false);
+		addNetmis.setToolTipText(dic.get("netmisToolTip"));
+		
 		checkBoxesBox.add(autoPaint);
 		checkBoxesBox.add(Box.createHorizontalGlue());
 		checkBoxesBox.add(startEdit);
@@ -160,6 +172,8 @@ public class Window extends JFrame
 		panel.add(checkBoxesBox);
 		panel.add(Box.createVerticalGlue());
 		panel.add(buttonBox);
+		
+		panel.setSize(panel.getPreferredSize());
 		
 		this.add(panel);
 		this.pack();
@@ -220,11 +234,6 @@ public class Window extends JFrame
 	public boolean isAsciiSaveOn()
 	{
 		return asciiSave.isSelected();
-	}
-	
-	public Dimension getPreferredSize()
-	{
-		return new Dimension(360, 180);
 	}
 	
 	private void setupMenuBar()
