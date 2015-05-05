@@ -6,7 +6,6 @@
 
 package gui;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -26,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import backend.Dictionary;
 import backend.Utility;
 
 public class Panel extends JPanel
@@ -74,7 +74,7 @@ public class Panel extends JPanel
 	private JButton createButton;
 	private JButton editButton;
 	
-	Panel()
+	public Panel()
 	{
 		dic = new Dictionary(Locale.getDefault().getLanguage());
 		
@@ -187,10 +187,7 @@ public class Panel extends JPanel
 		this.add(checkBoxesBox);
 		this.add(Box.createVerticalGlue());
 		this.add(buttonBox);
-	}
-	
-	public Dimension getPreferredSize()
-	{
-		return new Dimension(360, 160);
+		
+		this.setSize(this.getPreferredSize());
 	}
 }
