@@ -1,0 +1,14 @@
+autopaint=Auto Paint
+autopaintToolTip=Si escogido, 'Autopaints' el terreno del mapa
+create=Crearlo
+createToolTip=Crea los archivos del mapa con el información dado
+edit=Editarlo
+editToolTip=Comienza el editor de Battlezone con el nombre del archivo dado y las opciónes elegidos
+file=Archivo:
+netmis=Añadirlo al 'Netmis'
+netmisToolTip=Añadir una línea al archivo 'Netmis' para el mapa
+planets=Planetas:
+saveAscii=Guárdalo como 'Ascii'
+saveAsciiToolTip=Guárdalo el archivo 'bzn' como 'ascii'
+size=Tamaño:
+starteditToolTip=Si escogido, comienza el editor con '/startedit', pausar el videojuego

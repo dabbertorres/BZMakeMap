@@ -1,3 +1,9 @@
+/*
+ * Utility.java
+ * Contains functions to be used by both the Window and Actions classes,
+ * such as Registry and filesystem interaction, and launching makeTRN and
+ * the Battlezone Editor
+ */
 
 package backend;
 

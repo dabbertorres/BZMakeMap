@@ -1,4 +1,5 @@
 /*
+ * Window.java
  * Entry point for the revised and Java version of BZMakeMap
  * Massive improvement to the general quality of the code, and
  * uses an actual GUI library. Not a hacked in one of sorts.
@@ -46,7 +47,7 @@ public class Window extends JFrame
 	}
 	
 	private static final long serialVersionUID = -3317813288766774217L;
-
+	
 	// file chooser dialog for setting BZ Path
 	private JFileChooser fcDialog;
 	
@@ -70,25 +71,18 @@ public class Window extends JFrame
 	private JTextField fileName;
 	
 	private Box checkBoxesBox;
-	private JCheckBox autoPaint;
 	private JCheckBox startEdit;
 	private JCheckBox asciiSave;
 	private JCheckBox addNetmis;
 	
 	private Box buttonBox;
+	private JButton autoPaint;
 	private JButton createButton;
 	private JButton editButton;
 	
 	public Window()
 	{
 		super("BZMakeMap");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setVisible(true);
-		this.setResizable(false);
-		setupMenuBar();
-
-		fcDialog = new JFileChooser();
-		fcDialog.setFileFilter(new BzoneFileFilter());
 		
 		// check if we can find BZ path, if not, ask user for it and save the path to the registry for future use
 		if(Utility.getBZInstallDir() == null)
@@ -105,7 +99,13 @@ public class Window extends JFrame
 			}
 		}
 		
-		this.setTitle("BZMakeMap " + Utility.getBZInstallDir());
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+		this.setResizable(false);
+		setupMenuBar();
+		
+		fcDialog = new JFileChooser();
+		fcDialog.setFileFilter(new BzoneFileFilter());
 		
 		dic = new Dictionary(Locale.getDefault().getLanguage());
 		
@@ -113,67 +113,86 @@ public class Window extends JFrame
 		File[] planetFilesINI = Utility.getFilesInDir(Utility.getBZInstallDir() + "Edit/ini/");
 		String[] planetNames = new String[planetFilesINI.length];
 		
-		for(int i = 0; i < planetNames.length; i++)
+		for(int i = 0; i < planetNames.length; i++ )
 		{
 			String name = planetFilesINI[i].getName();
 			planetNames[i] = name.substring(0, name.length() - 4); // cut off file extension
 		}
 		
+		// panel
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
+		// planets
 		planetsBox = new Box(BoxLayout.X_AXIS);
 		planetsBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
 		planetsLabel = new JLabel(dic.get("planets"));
+		
 		planets = new JComboBox<String>(planetNames);
 		planets.setMaximumSize(planets.getPreferredSize());
+		
 		planetsBox.add(planetsLabel);
 		planetsBox.add(Box.createHorizontalGlue());
 		planetsBox.add(planets);
 		
+		// map sizes
 		sizesBox = new Box(BoxLayout.X_AXIS);
 		sizesBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
 		sizesLabel = new JLabel(dic.get("size"));
+		
 		sizes = new JComboBox<Integer>(new Integer[] {1280, 2560, 3840, 5120});
 		sizes.setMaximumSize(sizes.getPreferredSize());
+		
 		sizesBox.add(sizesLabel);
 		sizesBox.add(Box.createHorizontalGlue());
 		sizesBox.add(sizes);
 		
+		// file name
 		fileNameBox = new Box(BoxLayout.X_AXIS);
 		fileNameBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
 		fileNameLabel = new JLabel(dic.get("file"));
+		
 		fileName = new JTextField(10);
 		fileName.setMaximumSize(fileName.getPreferredSize());
+		
 		fileNameBox.add(fileNameLabel);
 		fileNameBox.add(Box.createHorizontalGlue());
 		fileNameBox.add(fileName);
 		
+		// check boxes
 		checkBoxesBox = new Box(BoxLayout.X_AXIS);
 		checkBoxesBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		autoPaint = new JCheckBox(dic.get("autopaint"), true);
-		autoPaint.setToolTipText(dic.get("autopaintToolTip"));
+		
 		startEdit = new JCheckBox("startedit", true);
 		startEdit.setToolTipText(dic.get("starteditToolTip"));
+		
 		asciiSave = new JCheckBox(dic.get("saveAscii"), false);
 		asciiSave.setToolTipText(dic.get("saveAsciiToolTip"));
+		
 		addNetmis = new JCheckBox(dic.get("netmis"), false);
 		addNetmis.setToolTipText(dic.get("netmisToolTip"));
 		
-		checkBoxesBox.add(autoPaint);
-		checkBoxesBox.add(Box.createHorizontalGlue());
 		checkBoxesBox.add(startEdit);
 		checkBoxesBox.add(Box.createHorizontalGlue());
 		checkBoxesBox.add(asciiSave);
 		checkBoxesBox.add(Box.createHorizontalGlue());
 		checkBoxesBox.add(addNetmis);
 		
+		// buttons
 		buttonBox = new Box(BoxLayout.X_AXIS);
 		buttonBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
 		createButton = new JButton(dic.get("create"));
 		createButton.setToolTipText(dic.get("createToolTip"));
 		createButton.addActionListener(new Actions.Create(this));
+		
+		autoPaint = new JButton(dic.get("autopaint"));
+		autoPaint.setToolTipText(dic.get("autopaintToolTip"));
+		autoPaint.addActionListener(new Actions.AutoPainter(this));
 		
 		editButton = new JButton(dic.get("edit"));
 		editButton.setToolTipText(dic.get("editToolTip"));
@@ -181,8 +200,11 @@ public class Window extends JFrame
 		
 		buttonBox.add(createButton);
 		buttonBox.add(Box.createHorizontalGlue());
+		buttonBox.add(autoPaint);
+		buttonBox.add(Box.createHorizontalGlue());
 		buttonBox.add(editButton);
 		
+		// adding
 		panel.add(planetsBox);
 		panel.add(Box.createVerticalGlue());
 		panel.add(sizesBox);
@@ -193,8 +215,10 @@ public class Window extends JFrame
 		panel.add(Box.createVerticalGlue());
 		panel.add(buttonBox);
 		
+		// resize for components
 		panel.setSize(panel.getPreferredSize());
 		
+		// add panel to frame and resize frame, and we're done!
 		this.add(panel);
 		this.pack();
 	}
@@ -202,6 +226,16 @@ public class Window extends JFrame
 	public void showDoneDialog()
 	{
 		JOptionPane.showMessageDialog(this, "Map file creation complete.", "Complete", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public void showAutoPaintDoneDialog()
+	{
+		JOptionPane.showMessageDialog(this, "Auto Painting complete.", "Complete", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public void showPathDialog()
+	{
+		JOptionPane.showMessageDialog(this, Utility.getBZInstallDir(), "BZ Path", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public void showBZPathChooser()
@@ -290,6 +324,9 @@ public class Window extends JFrame
 		JMenuItem setPath = new JMenuItem("Set Path...");
 		setPath.addActionListener(new Actions.BZPathSetter(this));
 		
+		JMenuItem currentPath = new JMenuItem("Get Path...");
+		currentPath.addActionListener(new Actions.BZPathGetter(this));
+		
 		// language setting
 		JMenu languageMenu = new JMenu("Set Language...", true);
 		
@@ -302,13 +339,15 @@ public class Window extends JFrame
 			
 			if(name.contains(".dic"))
 			{
-				JMenuItem lang = new JMenuItem(name.substring(0, 2));	// each dictionary file is two chars + the ".dic" extension
+				JMenuItem lang = new JMenuItem(name.substring(0, 2));	// each dictionary file is two chars + the ".dic"
+																		// extension
 				lang.addActionListener(languageSetter);
 				languageMenu.add(lang);
 			}
 		}
 		
 		menu.add(setPath);
+		menu.add(currentPath);
 		menu.add(languageMenu);
 		
 		mb.add(menu);

@@ -1,3 +1,7 @@
+/*
+ * Simple class acting as the filter on accepted file types for getting
+ * a user set Battlezone path
+ */
 
 package backend;
 

@@ -1,6 +1,12 @@
+/*
+ * Dictionary.java
+ * Wrapper class for making multi-language support easier
+ */
+
 package backend;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -35,8 +41,7 @@ public class Dictionary
 		
 		try
 		{
-			InputStream in = getClass().getResourceAsStream("src/res/" + language + ".dic");
-			Scanner scan = new Scanner(in);
+			Scanner scan = new Scanner(new File("src/res/" + language + ".dic"));
 			
 			while(scan.hasNextLine())
 			{
@@ -48,9 +53,9 @@ public class Dictionary
 			
 			scan.close();
 		}
-		catch(NullPointerException e)
+		catch(NullPointerException | FileNotFoundException e)
 		{
-			System.err.println("Could not find dictionary: " + language + ". Using \"en\"");
+			System.err.println("Could not find dictionary: \"" + language + "\". Using \"en\"");
 			language = "en";
 			loadFile();
 		}
