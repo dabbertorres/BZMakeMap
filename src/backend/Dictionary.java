@@ -35,7 +35,7 @@ public class Dictionary
 		
 		try
 		{
-			InputStream in = getClass().getResourceAsStream("/res/" + language + ".dic");
+			InputStream in = getClass().getResourceAsStream("src/res/" + language + ".dic");
 			Scanner scan = new Scanner(in);
 			
 			while(scan.hasNextLine())
