@@ -95,6 +95,7 @@ public class Actions
 				p = p.substring(0, p.lastIndexOf('/') + 1);
 			
 			Utility.setBZPath(p);
+			Utility.saveBZPath();
 		}
 	}
 	

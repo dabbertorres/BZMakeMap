@@ -22,13 +22,14 @@ public final class Utility
 			{
 				bzPath = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, BZ_REG_KEY, "InstallLocation");
 			}
-			else
-			{
-				// implement ask user for location and set the key to that
-			}
 		}
 		
 		return bzPath;
+	}
+	
+	public static void saveBZPath()
+	{
+		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, BZ_REG_KEY, "InstallLocation", bzPath);
 	}
 	
 	public static void setBZPath(String p)

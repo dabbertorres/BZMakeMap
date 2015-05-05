@@ -47,6 +47,9 @@ public class Window extends JFrame
 	
 	private static final long serialVersionUID = -3317813288766774217L;
 
+	// file chooser dialog for setting BZ Path
+	private JFileChooser fcDialog;
+	
 	// dictionary for strings
 	private Dictionary dic;
 	
@@ -76,9 +79,6 @@ public class Window extends JFrame
 	private JButton createButton;
 	private JButton editButton;
 	
-	// file chooser dialog for setting BZ Path
-	private JFileChooser fcDialog;
-	
 	public Window()
 	{
 		super("BZMakeMap");
@@ -86,6 +86,24 @@ public class Window extends JFrame
 		this.setVisible(true);
 		this.setResizable(false);
 		setupMenuBar();
+
+		fcDialog = new JFileChooser();
+		fcDialog.setFileFilter(new BzoneFileFilter());
+		
+		// check if we can find BZ path, if not, ask user for it and save the path to the registry for future use
+		if(Utility.getBZInstallDir() == null)
+		{
+			String p = null;
+			
+			// continue to ask the user until the pick a valid BZ path
+			while(p == null)
+			{
+				showBZPathChooser();
+				p = getSelectedBZPath();
+				Utility.setBZPath(p);
+				Utility.saveBZPath();
+			}
+		}
 		
 		dic = new Dictionary(Locale.getDefault().getLanguage());
 		
@@ -177,9 +195,6 @@ public class Window extends JFrame
 		
 		this.add(panel);
 		this.pack();
-		
-		fcDialog = new JFileChooser();
-		fcDialog.setFileFilter(new BzoneFileFilter());
 	}
 	
 	public void showDoneDialog()
