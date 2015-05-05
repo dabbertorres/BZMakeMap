@@ -96,6 +96,8 @@ public class Actions
 			
 			Utility.setBZPath(p);
 			Utility.saveBZPath();
+			
+			win.setTitle("BZMakeMap " + p);
 		}
 	}
 	

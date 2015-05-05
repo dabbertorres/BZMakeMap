@@ -105,6 +105,8 @@ public class Window extends JFrame
 			}
 		}
 		
+		this.setTitle("BZMakeMap " + Utility.getBZInstallDir());
+		
 		dic = new Dictionary(Locale.getDefault().getLanguage());
 		
 		// get the planets we can use
